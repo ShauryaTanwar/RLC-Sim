@@ -1,13 +1,38 @@
 # Resonance Studio
 
-A browser laboratory for exploring an ideal series RLC circuit. Select components, change their values, and see resonance, current, waveforms, and frequency response update together. The output is measured across the resistor.
+## Project overview — student-authored
+
+**Complete this section in your own words before submission.** Explain what Resonance Studio does, who it is for, and what engineering concept it helps people explore. The factual technical reference below is AI-generated and is labeled separately.
+
+[Student: write your own project description here.]
+
+## Features I am most proud of — student-authored
+
+**Complete this section in your own words.** Choose the features you personally want to highlight and explain why you are proud of them.
+
+[Student: describe the features you are most proud of here.]
+
+## My use of AI — student-authored
+
+**Complete this section in your own words.** Briefly summarize the AI tools/models you actually used and cite substantial AI-generated contributions. Verify model names and your own coding contributions against your records and `prompt_log.md`.
+
+[Student: write your own accurate AI-usage summary here.]
+
+## Project links
 
 - [Deployed frontend](https://resonance-studio-six.vercel.app/)
 - [Backend health](https://resonance-studio-api.onrender.com/api/health) · [API docs](https://resonance-studio-api.onrender.com/docs)
-- [GitHub](https://github.com/ShauryaTanwar/RLC-Sim) · [CI runs](https://github.com/ShauryaTanwar/RLC-Sim/actions/workflows/tests.yml)
-- [Portfolio](https://shauryatanwar.github.io/Personal-Website/#projects)
+- [Public GitHub repository](https://github.com/ShauryaTanwar/RLC-Sim) · [GitHub Actions](https://github.com/ShauryaTanwar/RLC-Sim/actions)
+- [Portfolio project entry](https://shauryatanwar.github.io/Personal-Website/#projects)
+- [Final delivery and verification record](FINAL_DELIVERY.md)
 
-## Using the laboratory
+---
+
+## AI-Generated Technical Reference
+
+The technical material below was prepared with AI assistance from repository inspection and implementation work. Review it for accuracy and keep it labeled as AI-generated. The student-authored sections above must remain the student's own writing.
+
+### Using the laboratory
 
 1. Wait for **Simulation engine connected**. Render may need to wake after inactivity; retry if the first request times out.
 2. Select R, L, or C in the SVG schematic. Use the synchronized slider or number field. Defaults are 10 Ω, 10 mH, 100 µF, and a 5 V RMS sine source.
@@ -18,7 +43,7 @@ A browser laboratory for exploring an ideal series RLC circuit. Select component
 
 The Configuration menu saves/loads one circuit in this browser. Export data downloads the calculated response as CSV. Reset workspace restores defaults without deleting saved configuration or completed labs.
 
-## Features
+### Features
 
 - Clickable schematic and validated numeric/logarithmic slider controls, with mH/µF converted to SI units for the API.
 - Two-channel oscilloscope using backend-calculated amplitude and relative phase.
@@ -28,15 +53,15 @@ The Configuration menu saves/loads one circuit in this browser. Export data down
 - Debounced/cancellable API requests, stale-response protection, explicit errors, and retry.
 - Browser-local persistence and CSV export; no account or database required.
 
-## Architecture and calculations
+### Architecture and calculations
 
 React/Vite runs on **Vercel** and sends JSON over HTTPS to **FastAPI on Render**. Pydantic validates inputs; Python/NumPy calculate the operating point, frequency response, and waveform data. Plotly.js renders the instruments. There are no AI API calls at runtime.
 
 For ω = 2πf, series impedance is Z = R + j(ωL − 1/(ωC)), and resistor transfer is H = R/Z. The backend calculates f₀ = 1/(2π√LC), I RMS = V RMS/|Z|, Q = 2πf₀L/R, and bandwidth = R/(2πL). Output phase is the negative impedance angle. At default resonance, |Z| = 10 Ω, current = 0.5 A RMS, resistor voltage = 5 V RMS, and gain = 0 dB.
 
-See [SPEC.md](SPEC.md) for the numerical contract and [REVIEW.md](REVIEW.md) for source inspection and verification.
+See [SPEC.md](SPEC.md) for the numerical contract, [REVIEW.md](REVIEW.md) for source inspection, and [FINAL_DELIVERY.md](FINAL_DELIVERY.md) for current CI and portfolio deployment evidence.
 
-## Local setup
+### Local setup
 
 Prerequisites: Python 3.12 and Node.js 22.12+ (Node 24 also works). From the repository root:
 
@@ -56,7 +81,7 @@ npm run dev
 
 Open http://127.0.0.1:5173 (or Vite's printed URL). Use port 5173 for default CORS. Vite forwards `/api` to `127.0.0.1:8000`. On macOS/Linux substitute `.venv/bin/python` for `.\.venv\Scripts\python.exe`. Local API docs: http://127.0.0.1:8000/docs.
 
-## Environment and secrets
+### Environment and secrets
 
 - `frontend/.env.example` documents `VITE_API_BASE_URL`. Local development needs no `.env`: an empty base uses the Vite proxy. In Vercel set `VITE_API_BASE_URL=https://resonance-studio-api.onrender.com`, without `/api`, and rebuild. Vite embeds `VITE_*` values in public JavaScript; never put secrets there.
 - `backend/.env.example` documents `ALLOWED_ORIGINS`. Defaults: `http://127.0.0.1:5173,http://localhost:5173`. On Render use `https://resonance-studio-six.vercel.app` (exact origin, no trailing slash). Multiple origins are comma-separated; preview origins require explicit configuration.
@@ -64,7 +89,7 @@ Open http://127.0.0.1:5173 (or Vite's printed URL). Use port 5173 for default CO
 - No simulator API keys are required. `.env`, `.env.local`, virtual environments, dependencies, logs, and build output are ignored. Hosting credentials belong in private provider settings, never source control.
 - Saved circuits and progress stay in browser localStorage, without device synchronization.
 
-## Tests and build
+### Tests and build
 
 With the backend still running, open another terminal at the repository root:
 
@@ -83,9 +108,9 @@ Observed November 26, 2026:
 - Backend: **5 passed**, one Starlette/AnyIO deprecation warning.
 - Frontend: **5 passed** against the running FastAPI backend, including all three labs, sweep completion, save/load, request ordering, errors, and retry.
 - Production build: **passed**, Vite 7.3.8. Plotly is approximately 377 kB gzip and triggers a large-chunk advisory.
-- GitHub Actions runs both suites and the build on **pushes and pull requests**. The frontend job starts and health-checks FastAPI. Jobs have ten-minute limits and print API logs on failure. See [REVIEW.md](REVIEW.md) and the final delivery report for observed remote runs; local success alone is not a CI result.
+- GitHub Actions runs both suites and the build on **pushes and pull requests**. The frontend job starts and health-checks FastAPI. Jobs have ten-minute limits and print API logs on failure. See [FINAL_DELIVERY.md](FINAL_DELIVERY.md) for the latest observed remote run; local success alone is not a CI result.
 
-## Deployment
+### Deployment
 
 The public services already exist. Reproduce their configuration as follows:
 
@@ -95,7 +120,7 @@ The public services already exist. Reproduce their configuration as follows:
 
 The earlier deployment record identifies Vercel Hobby and Render Free, and says Render was imported using a public Git URL. Do not assume every later push deploys Render automatically; check the provider before backend changes. This finalization changes CI/documentation, not runtime application code.
 
-## Repository structure
+### Repository structure
 
 ```text
 .github/workflows/tests.yml     Push/PR verification
@@ -130,20 +155,11 @@ DEMO_SCRIPT.md                 90–120 second recording plan
 DEMO_AND_SUBMISSION.md         Checklist and deployment notes
 ```
 
-## Known limitations
+### Known limitations
 
 Ideal sinusoidal steady state and resistor output only: no transients, parasitics, tolerances, inductor resistance, arbitrary circuits, or non-sinusoidal sources. The scope is a labeled slow scan at 0.25 display cycles/s, not physical real-time acquisition. Sweep animation scans calculated data rather than measuring hardware. Backend availability is required; cold starts can exceed the 15-second deadline. Automated DOM tests do not establish physical-hardware accuracy or comprehensive browser graphics, mobile, or accessibility coverage.
 
-## Student-authored introduction and personal notes
-
-The introduction above is an AI-assisted factual description. These personal statements need the student's own words and have not been fabricated:
-
-- **Introduction in my own words:** student to supply and review.
-- **Features I am personally proud of:** student to identify and explain.
-- **My development experience:** student to describe actual decisions, challenges, and learning.
-- **My AI usage summary:** known prompts identify Codex for implementation and technical finalization; see [prompt_log.md](prompt_log.md). The student must verify historical model names, separate ChatGPT usage, and their own coding contributions against actual records.
-
-## Remaining assignment actions
+### Remaining student actions
 
 - Complete the personal notes and independently write [REFLECTION.md](REFLECTION.md) using the assignment questions. The empty existing reflection was renamed without adding content.
 - Review prompt-log completeness and identify any student-written code from actual records.

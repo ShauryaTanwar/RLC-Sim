@@ -1196,3 +1196,34 @@ No additional user debugging prompt was supplied. The following work continued u
 - Checked the public simulator bundle's Render API origin, deployed default and edited-circuit measurements, and production CORS. No new simulator runtime deployment, video recording, student reflection, or course submission is claimed.
 
 The REVIEW contains these observed results and run links. Subsequent verification-record commits are checked independently in the final delivery report. Historical model identifiers, separate ChatGPT prompts, student-authored code contributions, personal narrative, and hours remain unverified unless the student supplies their actual records.
+
+
+### ChatGPT repository audit and finalization — November 26, 2026
+
+#### Verbatim user prompts
+
+> review the repository again and let me know whats left.
+
+> i want you and codex to do parts 1-5.
+
+> codex and i finished some parts, go through the repository and finalize what needs to be finished
+
+#### Tools and model used in this audit
+
+- ChatGPT GPT-6.2: repository audit, assignment-requirement comparison, and documentation review.
+- GitHub connector: read repository metadata, files, commit history, workflow runs and jobs; updated documentation in one commit.
+- Web research: reopened the official CMU 15-114 Project 3 instructions to verify required deliverables and academic constraints.
+- Read-only browser context: inspected the currently open deployed Resonance Studio page.
+
+Codex's earlier implementation and finalization use is documented in the preceding entries. This audit does not infer the exact Codex model selected in those earlier sessions.
+
+#### Work performed in this audit
+
+- Rechecked the latest RLC-Sim and Personal-Website main branches, files, commit histories, and GitHub Actions runs.
+- Confirmed RLC-Sim commit `6b4b9dca13a614592c460208946c7b74a96c391e` passed Actions run `45789026306`, with backend and frontend jobs successful.
+- Confirmed the portfolio Resonance Studio integration was deployed in Pages runs `45788631735` and `45848178345`.
+- Reorganized README so student-authored sections appear first and AI-generated technical reference is clearly labeled at the bottom.
+- Updated the review and submission checklist with current CI, portfolio, commit-history, and student-ownership status; added a final delivery record.
+- No simulator application source code was changed. No student-authored code is claimed by this audit.
+
+No development hours, personal learning claims, reflection prose, video recording, or course-form submission are claimed. The student must still verify the historical prompt/model record and identify their own substantial code contribution from actual work.
