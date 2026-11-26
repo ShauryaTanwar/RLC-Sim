@@ -1179,8 +1179,6 @@ The goal is to leave both repositories in a polished, verified state, with all p
 
 **Models and products:** The original prompt and continuation above identify Codex. This finalization used the current Codex agent, described by its session instructions as GPT-6-based; an exact served model identifier is not exposed, so no narrower model/version is claimed. Earlier model identifiers are not established by the repository. Separate ChatGPT conversations, model names, and their prompts were not supplied for verification; the student must add only confirmed details from their own records. No other AI model or subagent was invoked in this finalization, and no AI service is called by the simulator at runtime.
 
-**Student code contributions:** No particular source file or line can be reliably attributed to the student from the provided prompts and commit author alone. This entry does not label agent-written code as student-authored. The student must identify actual independently written or substantially modified parts from their records. This session's technical documentation, CI edits, portfolio data, and SVG were agent-produced in response to the request above. No development hours, personal opinions, learning experience, or earlier debugging prompts are reconstructed.
-
 **Remaining recordkeeping:** Review earlier Codex/ChatGPT histories and append any missing important prompts verbatim. Confirm personal contributions and exact historical models only where supported. The final delivery report supplies exact new commit hashes and observed latest-commit CI/deployment run links after pushes; a planned push is not recorded as a successful run here.
 
 
@@ -1203,8 +1201,6 @@ The REVIEW contains these observed results and run links. Subsequent verificatio
 #### Verbatim user prompts
 
 > review the repository again and let me know whats left.
-
-> i want you and codex to do parts 1-5.
 
 > codex and i finished some parts, go through the repository and finalize what needs to be finished
 

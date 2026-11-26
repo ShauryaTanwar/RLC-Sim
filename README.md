@@ -30,10 +30,6 @@ The majority of mathematics between the RLC circuits in /backend/app/rlc.py was 
 
 The Configuration menu saves/loads one circuit in this browser. Export data downloads the calculated response as CSV. Reset workspace restores defaults without deleting saved configuration or completed labs.
 
-## Proud Features
-
-I am personally proud of 
-
 ## Features
 
 - Clickable schematic and validated numeric/logarithmic slider controls, with mH/µF converted to SI units for the API.
