@@ -4,6 +4,16 @@
 
 TODO (student): describe your project, intended audience, and what you learned building it.
 
+## Public application
+
+- Frontend: https://resonance-studio-six.vercel.app
+- API health: https://resonance-studio-api.onrender.com/api/health
+- Repository: https://github.com/ShauryaTanwar/RLC-Sim
+- Successful CI run: https://github.com/ShauryaTanwar/RLC-Sim/actions/runs/45778088208
+- Demonstration preparation and submission checklist: [DEMO_AND_SUBMISSION.md](DEMO_AND_SUBMISSION.md)
+
+Hosted on Vercel Hobby and Render Free. Render may take 50 seconds or more to wake after inactivity; use Retry connection once it is awake. Only the production frontend origin is allowed by CORS; preview deployment origins are not enabled.
+
 ## Run locally
 
 Prerequisites: Python 3.12 and Node.js 22.12+ (or Node 24).
@@ -26,7 +36,7 @@ npm run dev
 
 Open the URL printed by Vite (normally http://127.0.0.1:5173). Vite forwards `/api` to the backend during development. On macOS/Linux use `.venv/bin/python` in place of `.venv\Scripts\python.exe`.
 
-This workstation did not expose `python` on PATH. An existing bundled Python 3.12 runtime was used to create `.venv`; the resulting environment is ready for the commands above. On a fresh machine, install Python 3.12 first.
+On a fresh machine, install Python 3.12 and create the virtual environment before running these commands.
 
 ## Verify
 
@@ -56,7 +66,7 @@ TODO (student): explain the equations, design decisions, and important limitatio
 
 ## Deploy the backend to Render
 
-1. Push the reviewed project to the GitHub repository. No commits or pushes were made by this implementation session.
+1. Push the reviewed project to the GitHub repository. Select the Free instance type before deployment.
 2. In Render, create a Blueprint from the repository using `render.yaml`, or create a Python web service with root directory `backend`.
 3. Build command: `pip install -r requirements.txt`.
 4. Start command: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`.
@@ -73,13 +83,13 @@ TODO (student): explain the equations, design decisions, and important limitatio
 
 Do not deploy a frontend with an empty API base unless the hosting platform also routes `/api` to the real backend. The Vite development proxy is not included in production.
 
-TODO (student): add the verified public GitHub URL and deployed demo URL. Repository visibility and deployment have not been changed.
+The public application and repository links above were verified on November 26, 2026. Add the demonstration video and portfolio links after they are published.
 
 ## Assignment deliverables
 
 - [ ] TODO: write and review this README.
-- [ ] TODO: confirm the public GitHub repository and successful Actions run.
-- [ ] TODO: deploy frontend/backend and add the working demonstration link.
+- [x] Confirm the public GitHub repository and successful Actions run.
+- [x] Deploy frontend/backend and add the working demonstration link.
 - [ ] TODO: record and link the demonstration video.
 - [ ] TODO: write and link your portfolio entry.
 - [ ] TODO: independently write `reflection.md` using the actual assignment questions.
@@ -87,7 +97,20 @@ TODO (student): add the verified public GitHub URL and deployed demo URL. Reposi
 
 `prompt_log.md` begins with the exact original implementation prompt. `reflection.md` is intentionally empty; the assignment questions were not supplied, and no reflection content has been generated.
 
-## Implementation verification record
+## Deployment verification — November 26, 2026
+
+- Vercel production deployment succeeded using `frontend`, Vite, `npm run build`, and `dist`.
+- Render Free backend deployed with Python 3.12.8 and `/api/health` returned the expected status JSON.
+- `VITE_API_BASE_URL=https://resonance-studio-api.onrender.com`; `ALLOWED_ORIGINS=https://resonance-studio-six.vercel.app`. Render logs showed successful OPTIONS and POST requests.
+- Public browser verification: engine connected; real oscilloscope, magnitude, and phase plots rendered.
+- Default measurements: resonance 159.15 Hz, impedance 10 Ω, current 500 mA, resistor voltage 5 V RMS, phase 0°.
+- Changing R to 20 Ω produced Q 0.50, bandwidth 318.31 Hz, and current 250 mA at resonance.
+- All three guided experiments completed in the public browser; progress persisted after reload. C = 200 µF produced 112.54 Hz; then L = 20 mH produced 79.58 Hz.
+- GitHub Actions run #1 for `89395c6` succeeded: backend and frontend jobs both passed. Action-runtime deprecation warnings remain; no CI failures were observed.
+- Responsive/mobile checks, graph hover/click behavior, CSV export, and full sweep completion were not verified in this deployment session.
+- No new commits or pushes were made in this deployment session. Demo video is not recorded or uploaded. Reflection was not modified.
+
+## Historical implementation verification record
 
 Verified locally on November 24, 2026:
 
@@ -98,4 +121,4 @@ Verified locally on November 24, 2026:
 - CORS preflight for the local frontend origin: **passed**.
 - Initial prompt: retained verbatim as the first prompt-log entry. Reflection: zero bytes.
 - Browser visual verification: **not completed**; browser connection unavailable and native Chrome access request timed out. Responsive layout and real Plotly browser rendering need a visual check before submission.
-- GitHub Actions is configured but has not run remotely. No commits, pushes, visibility changes, or deployments were performed.
+- At that earlier verification stage, GitHub Actions had not run remotely and deployment had not been performed. See the newer deployment record above.

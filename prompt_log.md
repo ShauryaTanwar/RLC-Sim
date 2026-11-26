@@ -841,3 +841,47 @@ The ultimate goal is to create a polished, technically accurate engineering appl
 ## Subsequent prompts
 
 <!-- Append only prompts actually used, verbatim, with any date you can verify. -->
+
+### Browser deployment and finalization session — November 26, 2026
+
+The following is the substantive continuation prompt used in this session, recorded verbatim. Short approval, sign-in, and “continue” messages followed during the browser workflow. This entry does not reconstruct prompts from other sessions.
+
+Continue my Resonance Studio CMU Project 3 work.
+
+
+
+Repository: [https://github.com/ShauryaTanwar/RLC-Sim](https://github.com/ShauryaTanwar/RLC-Sim)
+
+
+
+The application has already been built using React, Vite, Python, and FastAPI. It includes an interactive series RLC circuit simulator, oscilloscope, frequency-response analyzer, measurement panel, and three guided experiments.
+
+
+
+Local testing has reportedly passed.
+
+
+
+I want you to take ownership of the remaining deployment and finalization work.
+
+
+
+Your objectives:
+
+1. Deploy the FastAPI backend to Render.
+2. Deploy the React frontend to Vercel.
+3. Configure the frontend-backend connection and CORS.
+4. Verify the publicly deployed application.
+5. Verify GitHub Actions and fix any failures.
+6. Review the README and prompt log.
+7. Prepare the demonstration video and submission checklist.
+
+Use my connected browser and GitHub access where available.
+
+
+
+Do not incur charges without approval. Do not fabricate test results, commits, development hours, or deployment status. Do not write my academic reflection.
+
+
+
+Work through the tasks sequentially and ask for approval before consequential actions.
