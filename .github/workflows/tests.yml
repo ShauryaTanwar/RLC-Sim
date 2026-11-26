@@ -1,8 +1,11 @@
 name: Verify Resonance Studio
 on: [push, pull_request]
+permissions:
+  contents: read
 jobs:
   backend:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     defaults:
       run:
         working-directory: backend
@@ -17,6 +20,7 @@ jobs:
       - run: python -m pytest -q
   frontend:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     defaults:
       run:
         working-directory: frontend
@@ -40,4 +44,9 @@ jobs:
           python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 > /tmp/resonance-api.log 2>&1 &
           curl --retry 10 --retry-connrefused --retry-delay 1 --fail http://127.0.0.1:8000/api/health
       - run: npm test
+        env:
+          TEST_API_BASE_URL: http://127.0.0.1:8000
       - run: npm run build
+      - name: Show API diagnostics on failure
+        if: failure()
+        run: cat /tmp/resonance-api.log || true
