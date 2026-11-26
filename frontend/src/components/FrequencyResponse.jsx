@@ -8,11 +8,11 @@ export default function FrequencyResponse({ result, sweepProgress, sweepState, o
   const index = inspected === null || !r ? null : Math.min(inspected, r.frequency.length - 1);
   const shapes = useMemo(() => !m ? [] : [
     { type: 'line', x0: m.resonant_frequency, x1: m.resonant_frequency, y0: 0, y1: 1, yref: 'paper', line: { color: colors.green, dash: 'dot', width: 1.4 } },
-    { type: 'line', x0: result.parameters.frequency, x1: result.parameters.frequency, y0: 0, y1: 1, yref: 'paper', line: { color: '#9caac1', dash: 'dash', width: 1 } },
+    { type: 'line', x0: result.parameters.frequency, x1: result.parameters.frequency, y0: 0, y1: 1, yref: 'paper', line: { color: '#a4b6bf', dash: 'dash', width: 1 } },
     ...(sweepProgress !== null ? [{ type: 'line', x0: 10 ** (Math.log10(r.frequency[0]) + sweepProgress * Math.log10(r.frequency.at(-1) / r.frequency[0])), x1: 10 ** (Math.log10(r.frequency[0]) + sweepProgress * Math.log10(r.frequency.at(-1) / r.frequency[0])), y0: 0, y1: 1, yref: 'paper', line: { color: colors.orange, width: 2 } }] : []),
   ], [result, sweepProgress]);
   const xaxis = { ...axis, type: 'log', title: { text: 'Frequency (Hz)' }, exponentformat: 'SI', dtick: 1 };
-  const gainData = useMemo(() => !r ? [] : [{ x: r.frequency, y: r.magnitude_db, mode: 'lines', type: 'scatter', name: 'Gain', line: { color: colors.blue, width: 2.3 }, fill: 'tozeroy', fillcolor: 'rgba(56,107,214,0.035)', hovertemplate: '%{x:.3f} Hz · %{y:.2f} dB<extra></extra>' }], [r]);
+  const gainData = useMemo(() => !r ? [] : [{ x: r.frequency, y: r.magnitude_db, mode: 'lines', type: 'scatter', name: 'Gain', line: { color: colors.blue, width: 2.3 }, fill: 'tozeroy', fillcolor: 'rgba(131,207,255,0.045)', hovertemplate: '%{x:.3f} Hz · %{y:.2f} dB<extra></extra>' }], [r]);
   const phaseData = useMemo(() => !r ? [] : [{ x: r.frequency, y: r.phase_degrees, mode: 'lines', type: 'scatter', name: 'Phase', line: { color: colors.blue, width: 2.3 }, hovertemplate: '%{x:.3f} Hz · %{y:.2f}°<extra></extra>' }], [r]);
   const common = { shapes, xaxis, uirevision: `${result?.parameters.resistance}-${result?.parameters.inductance}-${result?.parameters.capacitance}` };
   function hover(e) { if (e.points?.[0]) setInspected(e.points[0].pointIndex); }

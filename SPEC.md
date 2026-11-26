@@ -4,6 +4,12 @@
 
 A single ideal series RLC circuit with a sinusoidal source; resistor voltage is the output. React 19 / Vite 7 JavaScript frontend, custom CSS, accessible SVG component selection, Plotly.js basic bundle for all instrument plots. Python 3.12 / FastAPI / Pydantic 2 / NumPy backend. No authentication, database, external data service, SPICE library, or transient solver.
 
+## Workbench interface
+
+The interface uses a graphite instrument theme with mint selection/resonance accents, blue input traces, and orange resistor-output traces. Wide screens place component/source controls, the schematic/oscilloscope, and live measurements in three columns. Frequency-response instruments span the analysis section below. Tablet layouts use two columns and a measurement summary; narrow screens stack circuit, controls, scope, and measurements, with response plots arranged vertically. Navigation provides labeled Workbench, Analysis, and Experiments anchors rather than an icon-only rail.
+
+Controls retain keyboard focus indicators, include a skip-to-workbench link, expose selected component buttons with `aria-pressed`, and announce slider values in physical units. Guided experiments have minimize/expand controls that preserve the active attempt and answer while leaving the workbench editable. On small screens the experiment panel is a collapsible bottom sheet. No circuit equations, API contract, saved-configuration keys, or lab-verification criteria change with the redesign.
+
 ## Numerical contract
 
 The API accepts resistance in Ω, inductance in H, capacitance in F, voltage in V RMS, and frequency in Hz. UI controls convert mH and µF to SI units. Default values: 10 Ω, 10 mH, 100 µF, 5 V RMS, 159.15494309189535 Hz.

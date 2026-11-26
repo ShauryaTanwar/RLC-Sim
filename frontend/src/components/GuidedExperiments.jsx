@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ArrowUpRight, BookOpen, Check, CheckCircle2, RotateCcw, X } from 'lucide-react';
+import { BookOpen, Check, CheckCircle2, ChevronDown, ChevronUp, FlaskConical, RotateCcw, X } from 'lucide-react';
 
 const experiments = [
   { title: 'Discover resonance', topic: 'FREQUENCY & CURRENT', description: 'Find the frequency where reactances cancel and current reaches its maximum.', objective: 'Locate the current maximum by tuning the source and inspecting the response.', steps: ['Explore the circuit with the signal generator or click a response curve.', 'Tune the source to the current maximum. At resonance, inductive and capacitive reactance cancel.', 'Enter your measured resonance frequency below and verify your result.'], duration: '3 min' },
@@ -18,6 +18,7 @@ export default function GuidedExperiments({ result, onParameters, defaults, pend
   const [capBaseline, setCapBaseline] = useState(null);
   const [feedback, setFeedback] = useState(null);
   const [finished, setFinished] = useState(false);
+  const [minimized, setMinimized] = useState(false);
   useEffect(() => {
     if (active === null) return;
     const close = event => { if (event.key === 'Escape') setActive(null); };
@@ -32,7 +33,7 @@ export default function GuidedExperiments({ result, onParameters, defaults, pend
     const initial = { ...defaults, frequency: 80 };
     onParameters(initial);
     setBaseline({ ...initial, f0: 1 / (2 * Math.PI * Math.sqrt(initial.inductance * initial.capacitance)), q: Math.sqrt(initial.inductance / initial.capacitance) / initial.resistance, bw: initial.resistance / (2 * Math.PI * initial.inductance) });
-    setActive(index); setAnswer(''); setStage(0); setFeedback(null); setFinished(false); setCapBaseline(null);
+    setActive(index); setAnswer(''); setStage(0); setFeedback(null); setFinished(false); setCapBaseline(null); setMinimized(false);
   }
   function complete() {
     const next = [...new Set([...completed, active])];
@@ -71,11 +72,12 @@ export default function GuidedExperiments({ result, onParameters, defaults, pend
   return <section className="experiments-section" id="experiments">
     <div className="section-heading"><div><span className="eyebrow">LEARN BY DOING</span><h2>Guided experiments</h2><p>A little theory. A lot of discovery.</p></div><span className="progress-summary"><BookOpen size={15}/>{completed.length} of 3 completed</span></div>
     <div className="experiment-grid">{experiments.map((exp, i) => <button key={exp.title} className={`experiment-card ${completed.includes(i) ? 'complete' : ''}`} onClick={() => start(i)} disabled={!result || pending}>
-      <div className="experiment-top"><span className="experiment-number">{completed.includes(i) ? <Check size={18}/> : `0${i + 1}`}</span><span>{exp.duration}</span><ArrowUpRight size={17}/></div>
+      <div className="experiment-top"><span className="experiment-number">{completed.includes(i) ? <Check size={18}/> : <FlaskConical size={18}/>}</span><span>{exp.duration}</span></div>
       <span className="eyebrow">{exp.topic}</span><h3>{exp.title}</h3><p>{exp.description}</p><div className="experiment-bottom">{completed.includes(i) ? 'Completed · explore again' : 'Open experiment'}<span>Interactive lab</span></div>
     </button>)}</div>
-    {active !== null && <div className="experiment-overlay" role="region" aria-label={`${experiments[active].title} experiment`}><div className="experiment-workspace">
-      <div className="experiment-detail-top"><span className="eyebrow">GUIDED LAB / 0{active + 1}</span><button className="icon-button" aria-label="Close experiment" onClick={() => setActive(null)}><X size={19}/></button></div>
+    {active !== null && <div className={`experiment-overlay ${minimized ? 'minimized' : ''}`} role="region" aria-label={`${experiments[active].title} experiment`}><div className="experiment-workspace">
+      <div className="experiment-detail-top"><span className="eyebrow">{minimized ? experiments[active].title : 'GUIDED EXPERIMENT'}</span><div className="experiment-drawer-actions"><button className="icon-button" aria-label={minimized ? 'Expand experiment' : 'Minimize experiment'} aria-expanded={!minimized} onClick={() => setMinimized(v => !v)}>{minimized ? <ChevronUp size={19}/> : <ChevronDown size={19}/>}</button><button className="icon-button" aria-label="Close experiment" onClick={() => setActive(null)}><X size={19}/></button></div></div>
+      <div className="experiment-content" hidden={minimized}>
       <h2>{experiments[active].title}</h2><p>{experiments[active].objective}</p>
       <div className="lab-progress"><span style={{ width: finished ? '100%' : active === 2 && stage === 1 ? '66%' : '25%' }}/></div><span className="lab-progress-label">{finished ? 'Experiment complete' : active === 2 ? `Step ${stage + 1} of 2` : 'Explore · measure · verify'}</span>
       <ol>{experiments[active].steps.map(step => <li key={step}>{step}</li>)}</ol>
@@ -85,6 +87,7 @@ export default function GuidedExperiments({ result, onParameters, defaults, pend
       {feedback && <div className={`lab-feedback ${feedback.ok ? 'success' : ''}`} role="status">{feedback.ok && <CheckCircle2 size={18}/>}<span>{feedback.text}</span></div>}
       <div className="lab-actions"><button className="button" onClick={() => start(active)}><RotateCcw size={14}/>Restart</button>{!finished ? <button className="button primary" onClick={verify} disabled={pending || !answer}>Verify {active === 2 && stage === 0 ? 'capacitance' : 'result'}</button> : <button className="button primary" onClick={() => setActive(null)}>Return to workbench</button>}</div>
       <p className="lab-hint">Use the workbench alongside this panel. Starting or restarting a lab restores the default circuit.</p>
+      </div>
     </div></div>}
   </section>;
 }

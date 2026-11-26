@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import Plotly from 'plotly.js-basic-dist-min';
 
-export const colors = { blue: '#386bd6', orange: '#d98845', green: '#3c8c70', grid: '#edf0f4', text: '#7a8493' };
+export const colors = { blue: '#83cfff', orange: '#ffb573', green: '#7be7bf', grid: '#28363e', text: '#a4b6bf' };
 export const baseLayout = {
   autosize: true, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
-  font: { family: 'Segoe UI, sans-serif', size: 12, color: colors.text },
+  font: { family: 'Segoe UI, sans-serif', size: 13, color: colors.text },
   margin: { l: 50, r: 18, t: 16, b: 45 }, showlegend: false,
-  hovermode: 'x unified', hoverlabel: { bgcolor: '#fff', bordercolor: '#e2e6ec', font: { size: 12 } },
+  hovermode: 'x unified', hoverlabel: { bgcolor: '#1b2b33', bordercolor: '#425860', font: { size: 13, color: '#e8f0f3' } },
 };
-export const axis = { gridcolor: colors.grid, zerolinecolor: '#d7dfe9', tickfont: { size: 12 }, title: { font: { size: 12 } }, automargin: true, fixedrange: false };
+export const axis = { gridcolor: colors.grid, zerolinecolor: '#42545d', tickfont: { size: 12 }, title: { font: { size: 13 } }, automargin: true, fixedrange: false };
 
 export default function Plot({ data, layout, onHover, onClick, ariaLabel, className = '' }) {
   const ref = useRef(null);

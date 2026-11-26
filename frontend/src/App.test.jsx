@@ -102,7 +102,12 @@ describe('workstation connected to the Python simulation engine', () => {
   it('verifies the resonance experiment and persists its completion', async () => {
     render(<App/>); await ready(); await start('Discover resonance');
     const panel = lab('Discover resonance');
+    fireEvent.change(panel.getByRole('spinbutton'), { target: { value: '159.15' } });
+    fireEvent.click(panel.getByRole('button', { name: 'Minimize experiment' }));
+    expect(panel.queryByRole('spinbutton')).not.toBeInTheDocument();
     edit('Frequency', 159.15); await ready();
+    fireEvent.click(panel.getByRole('button', { name: 'Expand experiment' }));
+    expect(panel.getByRole('spinbutton')).toHaveValue(159.15);
     fireEvent.change(panel.getByRole('spinbutton'), { target: { value: '50' } });
     fireEvent.click(panel.getByRole('button', { name: 'Verify result' }));
     expect(panel.getByRole('status')).toHaveTextContent('within 2%');

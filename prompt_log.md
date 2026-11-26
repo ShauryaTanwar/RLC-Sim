@@ -1227,3 +1227,22 @@ Codex's earlier implementation and finalization use is documented in the precedi
 - No simulator application source code was changed. No student-authored code is claimed by this audit.
 
 No development hours, personal learning claims, reflection prose, video recording, or course-form submission are claimed. The student must still verify the historical prompt/model record and identify their own substantial code contribution from actual work.
+
+
+---
+
+## UI overhaul - November 26, 2026
+
+User prompt, verbatim:
+
+```text
+finally, overhaul the ui for the RLC - sim and make it better
+```
+
+The existing Codex agent inspected the current frontend components, stylesheet, tests, and deployment configuration. Fetched and fast-forwarded the newer documentation commit before editing. Personal README edits appeared locally during the session; they were left untouched and excluded from the UI commit. No reflection content was edited.
+
+Implemented a graphite/mint instrument interface, labeled top navigation, a three-column desktop workbench, responsive stacked layouts, larger measurement hierarchy, matching dark Plotly axes/hover surfaces, clearer selected-component and slider states, keyboard focus/skip navigation, and collapsible guided experiments. Minimized labs retain active answers and accept workbench edits. Kept the existing numerical model, API, source controls, save/load/export, response interaction, and all three lab checks.
+
+Tools: PowerShell/Git and source reads for repository inspection; apply_patch and file writes for frontend changes; pytest for backend verification; Vitest/Testing Library against local uvicorn for integration verification; Vite for production build; Node/PostCSS for stylesheet parsing and theme variable/contrast checks. Browser inventory through cua_repl reported the browser host unavailable, so no graphical browser QA or responsive screenshot verification is claimed for this session. No subagent, image-generation model, or additional AI model was used.
+
+Verification before push: backend 5/5 passed; frontend 5/5 passed, including new assertions for retaining the guided-lab answer through minimize/edit/expand; production build passed. Core body/secondary/accent/button/chart-label color pairs exceeded 4.5:1 in computed contrast checks; this does not claim a complete accessibility audit. Starlette/AnyIO deprecation and Plotly bundle-size advisories remain. Remote CI and publication are checked after pushing and reported separately; a local build alone does not establish deployment success.

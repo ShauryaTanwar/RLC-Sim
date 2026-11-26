@@ -12,7 +12,7 @@ export default function ComponentControls({ selected, parameters, onChange }) {
   const item = properties[key];
   return <section className="panel properties-panel">
     <div className="compact-heading"><h2><SlidersHorizontal size={16}/> Component properties</h2><span className="reference-tag">{item.reference}</span></div>
-    <div className="component-tabs" aria-label="Component selection">{Object.entries(properties).map(([k, v]) => <button key={k} className={key === k ? 'active' : ''} onClick={() => onChange('selection', k)}>{v.title}</button>)}</div>
+    <div className="component-tabs" aria-label="Component selection">{Object.entries(properties).map(([k, v]) => <button key={k} className={key === k ? 'active' : ''} aria-pressed={key === k} onClick={() => onChange('selection', k)}>{v.title}</button>)}</div>
     <NumberControl {...item} value={Number((parameters[key] * item.scale).toPrecision(8))} onChange={v => onChange(key, v / item.scale)} log />
     <p className="control-description">{item.description}</p>
   </section>;

@@ -9,7 +9,7 @@ export default function CircuitSchematic({ parameters: p, selected, onSelect, at
   return <section className="panel circuit-panel" aria-labelledby="circuit-title">
     <div className="panel-heading"><div><span className="eyebrow">THE WORKBENCH</span><h2 id="circuit-title">Series RLC circuit</h2></div><span className="tag">IDEAL COMPONENTS</span></div>
     <div className="schematic-surface">
-      <div className="schematic-meta"><span><i className="small-dot" /> CIRCUIT 01</span><span>V<sub>out</sub> measured across R</span></div>
+      <div className="schematic-meta"><span>AC / SERIES NETWORK</span><span>V<sub>out</sub> measured across R</span></div>
       <svg className="schematic" viewBox="0 0 760 290" role="img" aria-label="Series circuit with AC source, resistor, inductor, capacitor, and ground. Components are selectable.">
         <g className="wires" fill="none" strokeWidth="2.2" strokeLinejoin="round">
           <path d="M100 133 V86 H230 M330 86 H397 M491 86 H600 V142 M600 167 V225 H100 V183" />
@@ -40,7 +40,7 @@ export default function CircuitSchematic({ parameters: p, selected, onSelect, at
           <text x="644" y="143" className="component-label" textAnchor="start">C<tspan baselineShift="sub" fontSize="11">1</tspan></text>
           <text x="644" y="169" className="component-value" textAnchor="start">{Number((p.capacitance * 1e6).toPrecision(6))} µF</text>
         </g>
-        <g fill="#fff" stroke="#58718c" strokeWidth="2"><circle cx="230" cy="86" r="4"/><circle cx="330" cy="86" r="4"/><circle cx="350" cy="225" r="4"/></g>
+        <g className="junctions" strokeWidth="2"><circle cx="230" cy="86" r="4"/><circle cx="330" cy="86" r="4"/><circle cx="350" cy="225" r="4"/></g>
         <g className="probe"><path d="M230 86 V13 M330 86 V13"/><circle cx="230" cy="13" r="3"/><circle cx="330" cy="13" r="3"/><text x="280" y="14">V<tspan baselineShift="sub" fontSize="9">out</tspan></text></g>
         <path className="current-arrow" d="M154 65 H197 M192 60 L197 65 L192 70"/><text className="current-label" x="176" y="53">I</text>
       </svg>

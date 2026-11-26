@@ -25,6 +25,7 @@ export default function App() {
   const [retry, setRetry] = useState(0);
   const [running, setRunning] = useState(true);
   const [help, setHelp] = useState(false);
+  const [activeSection, setActiveSection] = useState('workspace');
   const [saveMenu, setSaveMenu] = useState(false);
   const [notice, setNotice] = useState('');
   const [sweepProgress, setSweepProgress] = useState(null);
@@ -178,109 +179,61 @@ export default function App() {
     URL.revokeObjectURL(url);
   }
   return <div className="app-shell">
+    <a className="skip-link" href="#workspace">Skip to workbench</a>
     <header className="topbar">
       <a className="brand" href="#workspace" aria-label="Resonance Studio home">
-        <span className="brand-mark">
-          <Activity size={23} />
-        </span>
-        <span>resonance<span className="brand-light">studio</span>
-          <span className="brand-period">.</span>
-        </span>
+        <span className="brand-mark"><Activity size={24} /></span>
+        <span>resonance<span className="brand-light">studio</span><span className="brand-period">.</span></span>
       </a>
-      <div className="topbar-divider" />
-      <span className="workspace-name">Personal workspace</span>
+      <nav className="studio-nav" aria-label="Workspace navigation">
+        {[['workspace', 'Workbench', CircuitBoard], ['analysis', 'Analysis', Activity], ['experiments', 'Experiments', FlaskConical]].map(([id, label, Icon]) =>
+          <a key={id} href={`#${id}`} className={activeSection === id ? 'active' : ''} aria-current={activeSection === id ? 'location' : undefined} onClick={() => setActiveSection(id)}><Icon size={16}/><span>{label}</span></a>
+        )}
+      </nav>
       <div className="topbar-right">
-        <span className="version-tag">LAB v1.0</span>
-        <button className="button text-button" onClick={reset}>
-          <RotateCcw size={15} />Reset workspace</button>
-        <button className="icon-button help-button" onClick={() => setHelp(true)} aria-label="Help and circuit theory">
-          <CircleHelp size={19} />
-        </button>
-        <span className="avatar" title="Local workspace">RS</span>
+        <button className="button text-button" onClick={reset} aria-label="Reset workspace"><RotateCcw size={15}/><span>Reset workspace</span></button>
+        <button className="icon-button help-button" onClick={() => setHelp(true)} aria-label="Help and circuit theory"><CircleHelp size={20}/></button>
       </div>
     </header>
-    <aside className="nav-rail" aria-label="Workspace navigation">
-      <a className="rail-button active" href="#workspace" aria-label="Circuit workbench" title="Circuit workbench">
-        <CircuitBoard size={21} />
-      </a>
-      <a className="rail-button" href="#analysis" aria-label="Analysis instruments" title="Analysis instruments">
-        <Activity size={21} />
-      </a>
-      <a className="rail-button" href="#experiments" aria-label="Guided experiments" title="Guided experiments">
-        <FlaskConical size={21} />
-      </a>
-      <div className="rail-bottom">
-        <button className="rail-button" onClick={() => setHelp(true)} aria-label="Laboratory guide" title="Laboratory guide">
-          <BookOpen size={20} />
-        </button>
-      </div>
-    </aside>
-    <main id="workspace">
+    <main id="workspace" tabIndex={-1}>
       <div className="page-heading">
         <div>
-          <div className="breadcrumbs">WORKSPACE <span>/</span> SERIES RLC LAB</div>
-          <h1>Your circuit. <span>In resonance.</span>
-          </h1>
-          <p>Explore the balance between resistance, inductance, and capacitance.</p>
+          <div className="breadcrumbs"><span className="lab-indicator"/> THE INTERACTIVE ELECTRONICS LAB</div>
+          <h1>Find your <span>frequency.</span></h1>
+          <p>Build an intuition for resonance. One component at a time.</p>
         </div>
         <div className="heading-actions">
           <div className="save-wrap">
-            <button className="button" onClick={() => setSaveMenu(v => !v)} aria-expanded={saveMenu}>
-              <Save size={15} />Configuration<ChevronDown size={13} />
-            </button>{saveMenu && <div className="save-menu">
-              <button onClick={save}>Save current circuit</button>
-              <button onClick={load}>Load saved circuit</button>
-            </div>}</div>
-          <button className={`button ${running ? 'running-button' : 'primary'}`} onClick={() => setRunning(v => !v)}>{running ? <Pause size={15} /> : <Play size={15} />}{running ? 'Pause simulation' : 'Start simulation'}</button>
+            <button className="button" onClick={() => setSaveMenu(v => !v)} aria-expanded={saveMenu}><Save size={15}/>Configuration<ChevronDown size={14}/></button>
+            {saveMenu && <div className="save-menu"><button onClick={save}><Save size={15}/>Save current circuit</button><button onClick={load}><Layers size={15}/>Load saved circuit</button></div>}
+          </div>
+          <button className={`button ${running ? 'running-button' : 'primary'}`} onClick={() => setRunning(v => !v)}>{running ? <Pause size={15}/> : <Play size={15}/>}<span>{running ? 'Pause simulation' : 'Start simulation'}</span></button>
         </div>
       </div>
       <div className="workspace-toolbar">
-        <div>
-          <Layers size={15} />
-          <span>Series RLC</span>
-          <span className="toolbar-divider" />
-          <span className="muted">Resistor output · sinusoidal source</span>
-        </div>
-        <span className={`service-state ${error ? 'error' : ''}`}>
-          <i />{pending ? 'Calculating…' : error ? 'Service unavailable' : 'Simulation engine connected'}</span>
+        <div><CircuitBoard size={16}/><span>Series RLC</span><span className="toolbar-divider"/><span className="muted">Sinusoidal source · output across R</span></div>
+        <span className={`service-state ${error ? 'error' : pending ? 'pending' : ''}`} role="status"><i/>{pending ? 'Calculating…' : error ? 'Service unavailable' : 'Simulation engine connected'}</span>
       </div>
-      {error && <div className="error-banner" role="alert">
-        <span>
-          <strong>Simulation unavailable.</strong> {error}{result && ' Instruments show the last successful calculation.'}</span>
-        <button className="button" onClick={() => setRetry(v => v + 1)}>Retry connection</button>
-      </div>}
-      <div className="workbench-grid">
-        <div className="workbench-main">
-          <CircuitSchematic parameters={parameters} selected={selected} onSelect={setSelected} atResonance={!pending && !error && result?.measurements.at_resonance} />
-          <div id="analysis">
-            <Oscilloscope result={result} running={running && !pending && !error} />
-          </div>
-        </div>
-        <div className="workbench-controls">
-          <ComponentControls selected={selected} parameters={parameters} onChange={change} />
-          <SignalGenerator parameters={parameters} onChange={change} onTune={() => change('frequency', result.measurements.resonant_frequency)} onSweep={sweep} sweeping={sweepProgress !== null || sweepState === 'CALCULATING'} busy={pending || !!error} f0={!pending && !error ? result?.measurements.resonant_frequency : undefined} selected={selected === 'source'} />
-        </div>
+      {error && <div className="error-banner" role="alert"><span><strong>Simulation unavailable.</strong> {error}{result && ' Instruments show the last successful calculation.'}</span><button className="button" onClick={() => setRetry(v => v + 1)}>Retry connection</button></div>}
+      <div className="studio-grid">
+        <CircuitSchematic parameters={parameters} selected={selected} onSelect={setSelected} atResonance={!pending && !error && result?.measurements.at_resonance}/>
+        <aside className="workbench-controls" aria-label="Circuit controls">
+          <ComponentControls selected={selected} parameters={parameters} onChange={change}/>
+          <SignalGenerator parameters={parameters} onChange={change} onTune={() => change('frequency', result.measurements.resonant_frequency)} onSweep={sweep} sweeping={sweepProgress !== null || sweepState === 'CALCULATING'} busy={pending || !!error} f0={!pending && !error ? result?.measurements.resonant_frequency : undefined} selected={selected === 'source'}/>
+        </aside>
+        <Oscilloscope result={result} running={running && !pending && !error}/>
+        <MeasurementPanel result={result} updating={pending || !!error}/>
       </div>
-      <div className="analysis-grid">
-        <FrequencyResponse result={result} onFrequency={f => change('frequency', f)} sweepProgress={sweepProgress} sweepState={sweepState} />
-        <MeasurementPanel result={result} updating={pending || !!error} />
-      </div>
-      <GuidedExperiments result={result} onParameters={setParameters} defaults={defaults} pending={pending || !!error} />
+      <section id="analysis" className="analysis-section" aria-label="Frequency analysis">
+        <FrequencyResponse result={result} onFrequency={f => change('frequency', f)} sweepProgress={sweepProgress} sweepState={sweepState}/>
+      </section>
+      <GuidedExperiments result={result} onParameters={setParameters} defaults={defaults} pending={pending || !!error}/>
       <footer className="page-footer">
-        <span>
-          <span className="footer-logo">
-            <Activity size={14} />
-          </span> Resonance Studio <span>·</span> An open electronics laboratory</span>
-        <button onClick={exportData} disabled={!result || pending || !!error}>
-          <Download size={14} />Export response data</button>
-        <span>Built to understand.</span>
+        <span><Activity size={16}/> Resonance Studio <span className="footer-separator">/</span><span>Explore. Measure. Understand.</span></span>
+        <div><button onClick={exportData} disabled={!result || pending || !!error}><Download size={15}/>Export response data</button><button onClick={() => setHelp(true)}><BookOpen size={15}/>Circuit theory</button></div>
       </footer>
     </main>
-    {notice && <div className="toast" role="status">
-      <Check size={17} />{notice}<button className="icon-button" aria-label="Dismiss notification" onClick={() => setNotice('')}>
-        <X size={15} />
-      </button>
-    </div>}
-    {help && <HelpDialog onClose={() => setHelp(false)} />}
+    {notice && <div className="toast" role="status"><Check size={18}/>{notice}<button className="icon-button" aria-label="Dismiss notification" onClick={() => setNotice('')}><X size={15}/></button></div>}
+    {help && <HelpDialog onClose={() => setHelp(false)}/>}
   </div>;
 }
