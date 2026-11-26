@@ -1182,3 +1182,17 @@ The goal is to leave both repositories in a polished, verified state, with all p
 **Student code contributions:** No particular source file or line can be reliably attributed to the student from the provided prompts and commit author alone. This entry does not label agent-written code as student-authored. The student must identify actual independently written or substantially modified parts from their records. This session's technical documentation, CI edits, portfolio data, and SVG were agent-produced in response to the request above. No development hours, personal opinions, learning experience, or earlier debugging prompts are reconstructed.
 
 **Remaining recordkeeping:** Review earlier Codex/ChatGPT histories and append any missing important prompts verbatim. Confirm personal contributions and exact historical models only where supported. The final delivery report supplies exact new commit hashes and observed latest-commit CI/deployment run links after pushes; a planned push is not recorded as a successful run here.
+
+
+### Post-push verification and Pages debugging ? November 26, 2026
+
+No additional user debugging prompt was supplied. The following work continued under the verbatim finalization request above.
+
+- Pushed the CI and technical-documentation commits. RLC-Sim run 45788310730 completed/success for bff67fe73f559f36f0f0c6fb9d6ff01ea3668043; the public jobs API confirmed pytest, API startup, frontend tests, and production build succeeded.
+- Pushed the portfolio entry. Its first deployment run 45788299406 passed tests/build/upload but failed to discover the github-pages artifact. Read the public run/job annotations and artifact API; the artifact existed when inspected. The exact upstream timing cause was not established.
+- Consulted the official actions/deploy-pages and actions/upload-pages-artifact documentation and the deployment action source. Changed the existing portfolio workflow to separate build/deploy jobs with needs: build and bounded durations; updated its README. This was a genuine failure-driven fix, not an artificial history commit.
+- Automatic approval review rejected a proposed credential-helper read for a direct rerun request before it executed. No credential was obtained, printed, stored, or committed, and no rerun was performed through that route. The legitimate workflow fix used normal authorized Git commit/push operations.
+- Portfolio repair commit b5d607c3b0d4d0620412b95ae2278d7aac4ca06a passed build and deploy in run 45788631735. Public HTTP reads confirmed the live HTML, data, scripts, styles, and SVG matched the committed files. Node/jsdom execution of those published scripts rendered ten project cards, including Resonance Studio; both demo/source destinations returned HTTP 200. Local DOM validation had also confirmed all nine earlier projects and the four skill mappings were preserved.
+- Checked the public simulator bundle's Render API origin, deployed default and edited-circuit measurements, and production CORS. No new simulator runtime deployment, video recording, student reflection, or course submission is claimed.
+
+The REVIEW contains these observed results and run links. Subsequent verification-record commits are checked independently in the final delivery report. Historical model identifiers, separate ChatGPT prompts, student-authored code contributions, personal narrative, and hours remain unverified unless the student supplies their actual records.
