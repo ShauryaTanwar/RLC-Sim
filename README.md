@@ -1,24 +1,44 @@
 # Resonance Studio
 
-> README scaffold generated with Codex. **TODO (student): write and review the final README in your own words.** Technical commands below describe the implementation; narrative, screenshots, and submission links still need your review.
+A browser laboratory for exploring an ideal series RLC circuit. Select components, change their values, and see resonance, current, waveforms, and frequency response update together. The output is measured across the resistor.
 
-TODO (student): describe your project, intended audience, and what you learned building it.
+- [Deployed frontend](https://resonance-studio-six.vercel.app/)
+- [Backend health](https://resonance-studio-api.onrender.com/api/health) · [API docs](https://resonance-studio-api.onrender.com/docs)
+- [GitHub](https://github.com/ShauryaTanwar/RLC-Sim) · [CI runs](https://github.com/ShauryaTanwar/RLC-Sim/actions/workflows/tests.yml)
+- [Portfolio](https://shauryatanwar.github.io/Personal-Website/#projects)
 
-## Public application
+## Using the laboratory
 
-- Frontend: https://resonance-studio-six.vercel.app
-- API health: https://resonance-studio-api.onrender.com/api/health
-- Repository: https://github.com/ShauryaTanwar/RLC-Sim
-- Successful CI run: https://github.com/ShauryaTanwar/RLC-Sim/actions/runs/45778088208
-- Demonstration preparation and submission checklist: [DEMO_AND_SUBMISSION.md](DEMO_AND_SUBMISSION.md)
+1. Wait for **Simulation engine connected**. Render may need to wake after inactivity; retry if the first request times out.
+2. Select R, L, or C in the SVG schematic. Use the synchronized slider or number field. Defaults are 10 Ω, 10 mH, 100 µF, and a 5 V RMS sine source.
+3. Change frequency to move off resonance. Compare input and resistor-output waveforms, magnitude in dB, phase in degrees, and measurements.
+4. Choose **Tune to f₀** to return to calculated resonance (159.15 Hz for the defaults). **Pause simulation** freezes the oscilloscope scan; edits still update the steady-state solution.
+5. Hover over either response curve to inspect values, click it to tune the source, or choose **Run sweep** to scan a freshly calculated response.
+6. Try one of three guided experiments: discover resonance, investigate resistance, or predict changes caused by L and C. Each checks the actual calculation and records completion locally.
 
-Hosted on Vercel Hobby and Render Free. Render may take 50 seconds or more to wake after inactivity; use Retry connection once it is awake. Only the production frontend origin is allowed by CORS; preview deployment origins are not enabled.
+The Configuration menu saves/loads one circuit in this browser. Export data downloads the calculated response as CSV. Reset workspace restores defaults without deleting saved configuration or completed labs.
 
-## Run locally
+## Features
 
-Prerequisites: Python 3.12 and Node.js 22.12+ (or Node 24).
+- Clickable schematic and validated numeric/logarithmic slider controls, with mH/µF converted to SI units for the API.
+- Two-channel oscilloscope using backend-calculated amplitude and relative phase.
+- Plotly magnitude and phase graphs with resonance/operating markers, inspection, click-to-tune, and animated sweep cursor.
+- Resonant frequency, Q, bandwidth, impedance, RMS current, resistor voltage, and phase measurements.
+- Three guided experiments with predictions and numerical completion checks.
+- Debounced/cancellable API requests, stale-response protection, explicit errors, and retry.
+- Browser-local persistence and CSV export; no account or database required.
 
-From the repository root, create and install the backend environment:
+## Architecture and calculations
+
+React/Vite runs on **Vercel** and sends JSON over HTTPS to **FastAPI on Render**. Pydantic validates inputs; Python/NumPy calculate the operating point, frequency response, and waveform data. Plotly.js renders the instruments. There are no AI API calls at runtime.
+
+For ω = 2πf, series impedance is Z = R + j(ωL − 1/(ωC)), and resistor transfer is H = R/Z. The backend calculates f₀ = 1/(2π√LC), I RMS = V RMS/|Z|, Q = 2πf₀L/R, and bandwidth = R/(2πL). Output phase is the negative impedance angle. At default resonance, |Z| = 10 Ω, current = 0.5 A RMS, resistor voltage = 5 V RMS, and gain = 0 dB.
+
+See [SPEC.md](SPEC.md) for the numerical contract and [REVIEW.md](REVIEW.md) for source inspection and verification.
+
+## Local setup
+
+Prerequisites: Python 3.12 and Node.js 22.12+ (Node 24 also works). From the repository root:
 
 ```powershell
 python -m venv .venv
@@ -26,7 +46,7 @@ python -m venv .venv
 .\.venv\Scripts\python.exe -m uvicorn app.main:app --app-dir backend --reload --host 127.0.0.1 --port 8000
 ```
 
-In a second terminal:
+Keep the backend running. In a second terminal:
 
 ```powershell
 cd frontend
@@ -34,11 +54,19 @@ npm ci
 npm run dev
 ```
 
-Open the URL printed by Vite (normally http://127.0.0.1:5173). Vite forwards `/api` to the backend during development. On macOS/Linux use `.venv/bin/python` in place of `.venv\Scripts\python.exe`.
+Open http://127.0.0.1:5173 (or Vite's printed URL). Use port 5173 for default CORS. Vite forwards `/api` to `127.0.0.1:8000`. On macOS/Linux substitute `.venv/bin/python` for `.\.venv\Scripts\python.exe`. Local API docs: http://127.0.0.1:8000/docs.
 
-On a fresh machine, install Python 3.12 and create the virtual environment before running these commands.
+## Environment and secrets
 
-## Verify
+- `frontend/.env.example` documents `VITE_API_BASE_URL`. Local development needs no `.env`: an empty base uses the Vite proxy. In Vercel set `VITE_API_BASE_URL=https://resonance-studio-api.onrender.com`, without `/api`, and rebuild. Vite embeds `VITE_*` values in public JavaScript; never put secrets there.
+- `backend/.env.example` documents `ALLOWED_ORIGINS`. Defaults: `http://127.0.0.1:5173,http://localhost:5173`. On Render use `https://resonance-studio-six.vercel.app` (exact origin, no trailing slash). Multiple origins are comma-separated; preview origins require explicit configuration.
+- FastAPI does not automatically load `.env`. To use one locally, copy the example to `backend/.env` and add `--env-file backend/.env` to the root uvicorn command, or set the variable in the launching shell.
+- No simulator API keys are required. `.env`, `.env.local`, virtual environments, dependencies, logs, and build output are ignored. Hosting credentials belong in private provider settings, never source control.
+- Saved circuits and progress stay in browser localStorage, without device synchronization.
+
+## Tests and build
+
+With the backend still running, open another terminal at the repository root:
 
 ```powershell
 cd backend
@@ -48,77 +76,76 @@ npm test
 npm run build
 ```
 
-Keep the backend running for `npm test`: these five DOM interaction tests use the actual HTTP API (override `TEST_API_BASE_URL` to test another local service). They verify controls, request ordering, sweep completion, storage, error recovery, and all three guided labs. Plotly drawing is replaced by an inspectable trace surface in DOM tests, so these do not verify browser rendering.
+Run pytest **from `backend`** so `app` resolves. Frontend tests call the actual HTTP API at `http://127.0.0.1:8000`; optionally set `TEST_API_BASE_URL` to another local test backend. Only Plotly drawing is replaced by an inspectable test surface, so these DOM tests do not prove real-browser rendering.
 
-GitHub Actions runs five backend tests, five frontend integration tests, and the frontend build on push and pull request. Backend API documentation is available at http://127.0.0.1:8000/docs while the server runs.
+Observed November 26, 2026:
 
-## Architecture facts to review
+- Backend: **5 passed**, one Starlette/AnyIO deprecation warning.
+- Frontend: **5 passed** against the running FastAPI backend, including all three labs, sweep completion, save/load, request ordering, errors, and retry.
+- Production build: **passed**, Vite 7.3.8. Plotly is approximately 377 kB gzip and triggers a large-chunk advisory.
+- GitHub Actions runs both suites and the build on **pushes and pull requests**. The frontend job starts and health-checks FastAPI. Jobs have ten-minute limits and print API logs on failure. See [REVIEW.md](REVIEW.md) and the final delivery report for observed remote runs; local success alone is not a CI result.
 
-- `frontend/`: React, JavaScript, CSS, Vite, SVG schematic, Plotly.js charts, Lucide icons.
-- `backend/app/rlc.py`: ideal series RLC mathematics, logarithmic sweep, sinusoidal steady-state waveforms.
-- `backend/app/schemas.py`: Pydantic request/response schemas; all API quantities use SI units.
-- `backend/app/main.py`: FastAPI health and simulation endpoints with configurable CORS.
-- Debounced requests cancel stale work. Failed API calls display errors; no synthetic fallback data.
-- Exactly three guided experiments verify actual results. Completed labs and one saved configuration persist in browser storage.
-- This is an ideal circuit model. It does not model transients, parasitics, inductor resistance, or component tolerances.
+## Deployment
 
-TODO (student): explain the equations, design decisions, and important limitations in your own words. See `SPEC.md` for implementation facts.
+The public services already exist. Reproduce their configuration as follows:
 
-## Deploy the backend to Render
+1. **Render:** use `render.yaml` or a Python service rooted at `backend`. Build: `pip install -r requirements.txt`. Start: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`. Health: `/api/health`. The manifest specifies Python 3.12.8 and the free plan. Set `ALLOWED_ORIGINS` to the frontend origin.
+2. **Vercel:** import this repository with root `frontend`, Vite framework, build `npm run build`, output `dist` (also in `frontend/vercel.json`). Set `VITE_API_BASE_URL` to the Render origin before building.
+3. Verify health, POST `/api/simulate`, and deployed-browser calculations. The Vite proxy is development-only; an empty production API base does not route to Render automatically.
 
-1. Push the reviewed project to the GitHub repository. Select the Free instance type before deployment.
-2. In Render, create a Blueprint from the repository using `render.yaml`, or create a Python web service with root directory `backend`.
-3. Build command: `pip install -r requirements.txt`.
-4. Start command: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`.
-5. Set `ALLOWED_ORIGINS` to the exact Vercel frontend origin, e.g. `https://your-project.vercel.app`. For multiple origins, use a comma-separated list without trailing slashes.
-6. Check `https://YOUR-BACKEND/api/health` returns `{"status":"ok","service":"resonance-studio"}`.
+The earlier deployment record identifies Vercel Hobby and Render Free, and says Render was imported using a public Git URL. Do not assume every later push deploys Render automatically; check the provider before backend changes. This finalization changes CI/documentation, not runtime application code.
 
-## Deploy the frontend to Vercel
+## Repository structure
 
-1. Import the GitHub repository into Vercel; select **frontend** as the root directory and Vite as the framework.
-2. Set `VITE_API_BASE_URL` to the backend origin (e.g. `https://YOUR-BACKEND.onrender.com`), without a trailing `/api`.
-3. Use `npm run build` and output directory `dist` (also declared in `frontend/vercel.json`).
-4. Deploy, update Render's `ALLOWED_ORIGINS` to the resulting frontend origin, and verify a simulation from the deployed frontend.
-5. Changing `VITE_API_BASE_URL` requires a new frontend build. Render cold starts can cause the first request to time out; retry when the service wakes.
+```text
+.github/workflows/tests.yml     Push/PR verification
+backend/
+  app/main.py                  Routes, validation errors, CORS
+  app/schemas.py               SI-unit request/response models
+  app/rlc.py                   RLC mathematics, response, waveforms
+  tests/test_rlc.py            Five backend tests
+  requirements.txt
+  .env.example
+frontend/
+  src/App.jsx                 State, requests, save/load/export
+  src/components/             Schematic, controls, plots, measurements, labs
+  src/services/simulationApi.js
+  src/App.test.jsx            Five real-API DOM integration tests
+  src/testSetup.js
+  src/main.jsx
+  src/styles.css
+  index.html
+  package.json
+  package-lock.json
+  vite.config.js
+  vercel.json
+  .env.example
+render.yaml
+README.md
+SPEC.md
+REVIEW.md
+REFLECTION.md                  Student-owned reflection (content preserved)
+prompt_log.md                  Original prompt and recorded continuations
+DEMO_SCRIPT.md                 90–120 second recording plan
+DEMO_AND_SUBMISSION.md         Checklist and deployment notes
+```
 
-Do not deploy a frontend with an empty API base unless the hosting platform also routes `/api` to the real backend. The Vite development proxy is not included in production.
+## Known limitations
 
-The public application and repository links above were verified on November 26, 2026. Add the demonstration video and portfolio links after they are published.
+Ideal sinusoidal steady state and resistor output only: no transients, parasitics, tolerances, inductor resistance, arbitrary circuits, or non-sinusoidal sources. The scope is a labeled slow scan at 0.25 display cycles/s, not physical real-time acquisition. Sweep animation scans calculated data rather than measuring hardware. Backend availability is required; cold starts can exceed the 15-second deadline. Automated DOM tests do not establish physical-hardware accuracy or comprehensive browser graphics, mobile, or accessibility coverage.
 
-## Assignment deliverables
+## Student-authored introduction and personal notes
 
-- [ ] TODO: write and review this README.
-- [x] Confirm the public GitHub repository and successful Actions run.
-- [x] Deploy frontend/backend and add the working demonstration link.
-- [ ] TODO: record and link the demonstration video.
-- [ ] TODO: write and link your portfolio entry.
-- [ ] TODO: independently write `reflection.md` using the actual assignment questions.
-- [ ] TODO: review `prompt_log.md` and append subsequent prompts actually used.
+The introduction above is an AI-assisted factual description. These personal statements need the student's own words and have not been fabricated:
 
-`prompt_log.md` begins with the exact original implementation prompt. `reflection.md` is intentionally empty; the assignment questions were not supplied, and no reflection content has been generated.
+- **Introduction in my own words:** student to supply and review.
+- **Features I am personally proud of:** student to identify and explain.
+- **My development experience:** student to describe actual decisions, challenges, and learning.
+- **My AI usage summary:** known prompts identify Codex for implementation and technical finalization; see [prompt_log.md](prompt_log.md). The student must verify historical model names, separate ChatGPT usage, and their own coding contributions against actual records.
 
-## Deployment verification — November 26, 2026
+## Remaining assignment actions
 
-- Vercel production deployment succeeded using `frontend`, Vite, `npm run build`, and `dist`.
-- Render Free backend deployed with Python 3.12.8 and `/api/health` returned the expected status JSON.
-- `VITE_API_BASE_URL=https://resonance-studio-api.onrender.com`; `ALLOWED_ORIGINS=https://resonance-studio-six.vercel.app`. Render logs showed successful OPTIONS and POST requests.
-- Public browser verification: engine connected; real oscilloscope, magnitude, and phase plots rendered.
-- Default measurements: resonance 159.15 Hz, impedance 10 Ω, current 500 mA, resistor voltage 5 V RMS, phase 0°.
-- Changing R to 20 Ω produced Q 0.50, bandwidth 318.31 Hz, and current 250 mA at resonance.
-- All three guided experiments completed in the public browser; progress persisted after reload. C = 200 µF produced 112.54 Hz; then L = 20 mH produced 79.58 Hz.
-- GitHub Actions run #1 for `89395c6` succeeded: backend and frontend jobs both passed. Action-runtime deprecation warnings remain; no CI failures were observed.
-- Responsive/mobile checks, graph hover/click behavior, CSV export, and full sweep completion were not verified in this deployment session.
-- No new commits or pushes were made in this deployment session. Demo video is not recorded or uploaded. Reflection was not modified.
-
-## Historical implementation verification record
-
-Verified locally on November 24, 2026:
-
-- Backend: **5 passed** (one dependency deprecation warning from Starlette/AnyIO).
-- Frontend: **5 passed**, using the actual running FastAPI backend. Plotly drawing is stubbed only within DOM tests.
-- Production frontend build: **passed**. The separate Plotly bundle is approximately 377 kB gzipped and triggers Vite's large-chunk advisory.
-- Vite-to-FastAPI proxy POST: **passed**. Default operating point: f₀ 159.154943 Hz, |Z| 10 Ω, I 0.5 A RMS, Vᴿ 5 V RMS, gain 0 dB, phase 0°.
-- CORS preflight for the local frontend origin: **passed**.
-- Initial prompt: retained verbatim as the first prompt-log entry. Reflection: zero bytes.
-- Browser visual verification: **not completed**; browser connection unavailable and native Chrome access request timed out. Responsive layout and real Plotly browser rendering need a visual check before submission.
-- At that earlier verification stage, GitHub Actions had not run remotely and deployment had not been performed. See the newer deployment record above.
+- Complete the personal notes and independently write [REFLECTION.md](REFLECTION.md) using the assignment questions. The empty existing reflection was renamed without adding content.
+- Review prompt-log completeness and identify any student-written code from actual records.
+- Record/upload the deployed-app demo using [DEMO_SCRIPT.md](DEMO_SCRIPT.md), verify viewing permissions, and add the real video link here and to the portfolio if required. No recording or video URL is claimed.
+- Check the actual CMU 15-114 Project 3 rubric and submit the assignment yourself. No course form has been submitted.
